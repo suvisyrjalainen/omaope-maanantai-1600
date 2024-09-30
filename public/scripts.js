@@ -13,6 +13,14 @@ function sendChatMessage() {
     console.log(chatUserInput);
     document.getElementById('chat-input').value = '';
     addMessageToChatbox(chatUserInput);
+
+    fetch('/get-question',{
+      method:'POST',
+      headers:{
+        'Content-Type' : 'application/json'
+      },
+      body: JSON.stringify({question: chatUserInput})
+    });
 }
 
 function addMessageToChatbox(message) {
