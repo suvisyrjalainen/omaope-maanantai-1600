@@ -7,20 +7,31 @@ document.getElementById('chat-input').addEventListener('keypress', function (key
 });
 
 
-function sendChatMessage() {
+async function sendChatMessage() {
     console.log('Viesti lähetetty');
     const chatUserInput = document.getElementById('chat-input').value;
     console.log(chatUserInput);
     document.getElementById('chat-input').value = '';
     addMessageToChatbox(chatUserInput);
 
-    fetch('/get-question',{
+    let response = await fetch('/chat',{
       method:'POST',
       headers:{
         'Content-Type' : 'application/json'
       },
       body: JSON.stringify({question: chatUserInput})
     });
+
+    console.log(response);
+
+    if(response.status == 200){
+      let data = await response.json();
+      console.log(data);
+      addMessageToChatbox("Tämä kysymys palautui takaisin: " + data.question);
+    }
+    else{
+      addMessageToChatbox("Tapahtui virhe. Yritä myöhemmin uudelleen");
+    }
 }
 
 function addMessageToChatbox(message) {
