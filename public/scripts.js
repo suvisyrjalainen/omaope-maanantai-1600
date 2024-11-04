@@ -27,7 +27,7 @@ async function sendChatMessage() {
     if(response.status == 200){
       let data = await response.json();
       console.log(data);
-      addMessageToChatbox("Tämä kysymys palautui takaisin: " + data.question);
+      addMessageToChatbox(data.answer);
     }
     else{
       addMessageToChatbox("Tapahtui virhe. Yritä myöhemmin uudelleen");
