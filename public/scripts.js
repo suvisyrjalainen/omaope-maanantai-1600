@@ -7,12 +7,15 @@ document.getElementById('chat-input').addEventListener('keypress', function (key
 });
 
 
+document.getElementById('send-images-button').addEventListener('click', sendImages);
+
+
 async function sendChatMessage() {
     console.log('Viesti lähetetty');
     const chatUserInput = document.getElementById('chat-input').value;
     console.log(chatUserInput);
     document.getElementById('chat-input').value = '';
-    addMessageToChatbox(chatUserInput);
+    addMessageToChatbox(chatUserInput, "user-message");
 
     let response = await fetch('/chat',{
       method:'POST',
@@ -27,16 +30,18 @@ async function sendChatMessage() {
     if(response.status == 200){
       let data = await response.json();
       console.log(data);
-      addMessageToChatbox(data.answer);
+      addMessageToChatbox("ChatGPT: " + data.answer, "bot-message");
     }
     else{
-      addMessageToChatbox("Tapahtui virhe. Yritä myöhemmin uudelleen");
+      addMessageToChatbox("ChatGPT: Tapahtui virhe. Yritä myöhemmin uudelleen", "bot-message");
     }
 }
 
-function addMessageToChatbox(message) {
+function addMessageToChatbox(message, className)
+  {
     console.log('Viesti lisätty');
     const messageElement = document.createElement('div');
+    messageElement.classList.add('message', className);
     messageElement.innerText = message;
     console.log(messageElement);
     document.getElementById('chatbox').appendChild(messageElement);

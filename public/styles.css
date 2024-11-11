@@ -14,3 +14,16 @@ body{
     border: none;
     padding: 10px;
 }
+
+.message{
+    margin-bottom: 10px;
+}
+
+.user-message{
+    font-weight: bold;
+}
+
+.bot-message{
+    font-style: italic;
+    font-weight: normal;
+}
