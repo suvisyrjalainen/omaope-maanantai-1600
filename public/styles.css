@@ -6,13 +6,15 @@ body{
 .chatbox {
     background-color: #ffffff;
     width: 100%;
-    padding: 10px
+    padding: 10px;
+    border-radius: 5px 5px 0 0;
 }
 
 .user-input{
     width: 100%;
     border: none;
     padding: 10px;
+    border-radius: 0 0 5px 5px;
 }
 
 .message{
@@ -26,4 +28,18 @@ body{
 .bot-message{
     font-style: italic;
     font-weight: normal;
+}
+
+.input-container {
+    display: flex;
+    margin-bottom: 10px;  /* Lisää tämä */
+    background-color: white;
+    width: 100%;
+    border-radius: 5px;
+}
+
+#image-input {
+    flex: 1;
+    padding: 10px;
+    border: none;
 }

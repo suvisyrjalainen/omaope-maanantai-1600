@@ -47,3 +47,34 @@ function addMessageToChatbox(message, className)
     document.getElementById('chatbox').appendChild(messageElement);
 
 }
+
+async function sendImages(){
+  const imageInput = document.getElementById('image-input');
+  const files = imageInput.files;
+  console.log(files);
+
+  const formData = new FormData();
+  
+  for (const file of files) {
+    formData.append('images', file);
+  }
+
+  //logataan että nähdään tiedostot
+  console.log(formData.getAll('images'));
+
+  const response = await fetch('/upload-images', {
+    method: 'POST',
+    body: formData
+  });
+
+  if (response.status === 200) {
+    const data = await response.json();
+    console.log(data.message);
+  }
+  else{
+    console.log('Virhe tiedostojen lähetyksessä');
+    console.log(response);
+    const data = await response.json();
+    console.log(data.error);
+  }
+}
