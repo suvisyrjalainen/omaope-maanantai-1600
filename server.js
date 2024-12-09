@@ -21,7 +21,7 @@ const client = new vision.ImageAnnotatorClient({
 });
 
 let koealueTekstina = '';
-
+let context = [];
 
 app.post('/chat',async (req,res) =>{
   const userMessage = req.body.question;
@@ -69,7 +69,7 @@ app.post('/upload-images', upload.array('images', 10), async(req,res) =>{
       const [result] = await client.textDetection(imagePath);
       //ottaa result-muuttujasta kaikki tekstintunnistusmerkinnät (textAnnotations), jotka sisältävät kaikki kuvasta tunnistetut tekstialueet.
       const detections = result.textAnnotations;
-      //console.log('OCR Detected Text:', detections);
+      console.log('OCR Detected Text:', detections);
       // poistaa tiedoston, joka on luotu kuvan lähettämisen yhteydessä
       fs.unlinkSync(imagePath); 
       // Koodi tarkistaa, löytyykö kuvasta OCR-tunnistuksen perusteella tekstiä. Jos löytyy, se palauttaa tämän tekstin. Jos ei, se palauttaa tyhjän merkkijonon 
@@ -78,7 +78,37 @@ app.post('/upload-images', upload.array('images', 10), async(req,res) =>{
 
      koealueTekstina = texts.join(' ');
      console.log('OCR Combined Text:', koealueTekstina);
-   //res.json({ message: 'Images uploaded successfully.' });
+   
+     context = [{ role: 'user', content: koealueTekstina }];
+
+     const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages: context.concat([{ role: 'user', content: 'Luo yksi yksinkertainen ja selkeä kysymys ja sen vastaus yllä olevasta tekstistä suomeksi. Kysy vain yksi asia kerrallaan.' }]),
+        max_tokens: 150
+      })
+    }); 
+
+    if(response.status===200){
+      const data = await response.json();
+      console.log(data.choices[0].message);
+      
+      const responseText = data.choices[0].message.content.trim();
+      console.log('Response Text:', responseText);
+
+    }
+    else{
+      console.log('API response error:', response);
+    }
+
+
+
+      
   }
 });
 
